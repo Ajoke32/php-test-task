@@ -6,6 +6,7 @@ use App\Http\Requests\StoreContributorRequest;
 use App\Models\Collection;
 use App\Models\Contributor;
 use Illuminate\Http\Request;
+use Mockery\Exception;
 
 class ContributorController extends Controller
 {
@@ -16,19 +17,33 @@ class ContributorController extends Controller
 
     public function index()
     {
-        $collections=Contributor::all();
-        return response()->json([
-            'collections' => $collections,
-        ]);
+        try{
+            $collections = Contributor::all();
+            return response()->json([
+                'collections' => $collections,
+            ]);
+        }catch (Exception $e){
+            return response()->json([
+                'message' => $e->getMessage(),
+                'code'=>$e->getCode()
+            ]);
+        }
     }
 
     public function store(StoreContributorRequest $request){
 
-        $created = Contributor::create($request->all());
+        try{
+            $created = Contributor::create($request->all());
 
-        return response()->json([
-            'created'=>$created
-        ]);
+            return response()->json([
+                'created'=>$created
+            ]);
+        }catch (Exception $e){
+            return response()->json([
+                'message' => $e->getMessage(),
+                'code'=>$e->getCode()
+            ]);
+        }
     }
 
 }
